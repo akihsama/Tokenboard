@@ -8,7 +8,7 @@
 每个 Key 单独统计，也能看所有 Key 的汇总。非主流平台用模板自己适配。
 
 [![CI](https://github.com/USERNAME/tokenboard/actions/workflows/ci.yml/badge.svg)](https://github.com/USERNAME/tokenboard/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](./LICENSE)
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](./LICENSE)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org)
 
 </div>
@@ -281,4 +281,14 @@ tokenboard/
 
 ## License
 
-[MIT](./LICENSE)
+本项目以 [GNU General Public License v3.0](./LICENSE)（GPL-3.0）发布。
+
+- ✅ **可付费售卖**：GPL 允许就软件的复制与分发收取费用。
+- ✅ **可商用**：商业用途不受限制。
+- ✅ **后续改动免费**：任何人获得本程序后，都有权免费获取其源代码与改动。
+- ⚠️ **卖出后概不负责**：本程序按「现状」提供，**不提供任何担保**（详见 LICENSE 第 11、12 条），作者不对使用后果承担责任。
+- 🔁 **衍生代码必须开源**：任何基于本项目的修改、衍生作品在分发时，必须以 GPL-3.0 同样开源（copyleft）。
+
+> 你是版权所有者，可同时提供专有授权；但公开分发的版本须遵守 GPL-3.0。
+>
+> 完整条款见 [LICENSE](./LICENSE)。

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "API Token usage dashboard for LLM platforms — track per-key and aggregate token usage & cost across OpenAI, Anthropic, DeepSeek, OpenRouter and more.",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

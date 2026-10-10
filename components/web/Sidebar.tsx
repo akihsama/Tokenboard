@@ -44,7 +44,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
             <span>主题</span>
             <ThemeToggle />
           </div>
-          <div>开源 · MIT</div>
+          <div>开源 · GPL-3.0</div>
           <div className="mt-8">
             <Link href="/m" className="muted">
               切换到移动版 →
