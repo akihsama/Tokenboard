@@ -1,0 +1,84 @@
+{
+  "id": "openai.admin",
+  "name": "OpenAI",
+  "version": 1,
+  "category": "usage",
+  "docs": "https://platform.openai.com/docs/api-reference/usage",
+  "description": "OpenAI organization-level token usage & cost. Requires an Admin API key (sk-admin-...).",
+  "match": {
+    "keyPrefix": "sk-admin-",
+    "baseUrlHint": "api.openai.com"
+  },
+  "auth": {
+    "type": "bearer",
+    "headerName": "Authorization",
+    "valueTemplate": "Bearer {{key}}"
+  },
+  "endpoints": [
+    {
+      "id": "completions",
+      "method": "GET",
+      "baseUrl": "https://api.openai.com",
+      "path": "/v1/organization/usage/completions",
+      "query": {
+        "bucket_width": "{{window.bucketWidth}}",
+        "group_by": ["model", "api_key_id", "project_id"],
+        "start_time": "{{window.startUnix}}",
+        "end_time": "{{window.endUnix}}",
+        "limit": 31
+      },
+      "headers": {},
+      "pagination": {
+        "type": "cursor",
+        "cursorParam": "page",
+        "cursorPath": "$.next_page",
+        "maxPages": 50
+      },
+      "as": "usage"
+    },
+    {
+      "id": "costs",
+      "method": "GET",
+      "baseUrl": "https://api.openai.com",
+      "path": "/v1/organization/costs",
+      "query": {
+        "bucket_width": "1d",
+        "group_by": ["line_item", "project_id"],
+        "start_time": "{{window.startUnix}}",
+        "end_time": "{{window.endUnix}}",
+        "limit": 31
+      },
+      "headers": {},
+      "pagination": {
+        "type": "cursor",
+        "cursorParam": "page",
+        "cursorPath": "$.next_page",
+        "maxPages": 50
+      },
+      "as": "cost"
+    }
+  ],
+  "mapping": {
+    "usage": {
+      "recordsPath": "$.data[*].results[*]",
+      "bucketStartFromParent": "$.data[*].start_time",
+      "bucketEndFromParent": "$.data[*].end_time",
+      "fields": {
+        "bucketStart": "$.bucket_start_time",
+        "inputTokens": "$.input_tokens",
+        "cachedInputTokens": "$.input_cached_tokens",
+        "outputTokens": "$.output_tokens",
+        "requests": "$.num_model_requests",
+        "model": "$.model",
+        "apiKeyId": "$.api_key_id",
+        "projectId": "$.project_id",
+        "userId": "$.user_id"
+      },
+      "timeUnit": "unix_seconds"
+    }
+  },
+  "supportsPerKey": true,
+  "setup": {
+    "note": "需要组织管理员创建的 Admin API Key（以 sk-admin- 开头），普通项目 Key 无法访问用量接口。按 api_key_id 分组即可拆分每个 Key 的用量。"
+  }
+}

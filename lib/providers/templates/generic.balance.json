@@ -1,0 +1,42 @@
+{
+  "id": "generic.balance",
+  "name": "通用余额模板",
+  "version": 1,
+  "category": "balance",
+  "docs": "https://github.com/tokenboard",
+  "description": "适配任意返回余额 JSON 的平台。修改 baseUrl 与 JSONPath 即可接入 /user/balance、/dashboard/billing 等接口。",
+  "match": {},
+  "auth": {
+    "type": "bearer",
+    "headerName": "Authorization",
+    "valueTemplate": "Bearer {{key}}"
+  },
+  "endpoints": [
+    {
+      "id": "balance",
+      "method": "GET",
+      "baseUrl": "https://api.example.com",
+      "path": "/user/balance",
+      "query": {},
+      "headers": {},
+      "pagination": { "type": "none" },
+      "as": "balance"
+    }
+  ],
+  "mapping": {
+    "balance": {
+      "amount": "$.balance",
+      "currency": "$.currency",
+      "isAvailable": "$.is_available",
+      "coerce": {
+        "amount": "number"
+      },
+      "defaultCurrency": "USD"
+    }
+  },
+  "supportsPerKey": false,
+  "setup": {
+    "requiresOrgId": false,
+    "note": "通用模板。请把 endpoints[0].baseUrl 改成目标平台地址、path 改成余额接口路径，并用 JSONPath 修改 mapping.balance 的字段映射。很多平台是 GET {baseUrl}/user/balance 或 {baseUrl}/dashboard/billing/credit_grants。"
+  }
+}

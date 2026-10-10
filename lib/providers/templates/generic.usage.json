@@ -1,0 +1,52 @@
+{
+  "id": "generic.usage",
+  "name": "通用用量模板",
+  "version": 1,
+  "category": "usage",
+  "docs": "https://github.com/tokenboard",
+  "description": "适配任意返回按时间分桶 token 用量的平台。修改 baseUrl/path 与 mapping.usage 的 JSONPath 即可接入。",
+  "match": {},
+  "auth": {
+    "type": "bearer",
+    "headerName": "Authorization",
+    "valueTemplate": "Bearer {{key}}"
+  },
+  "endpoints": [
+    {
+      "id": "usage",
+      "method": "GET",
+      "baseUrl": "https://api.example.com",
+      "path": "/v1/usage",
+      "query": {
+        "start_time": "{{window.startUnix}}",
+        "end_time": "{{window.endUnix}}"
+      },
+      "headers": {},
+      "pagination": {
+        "type": "page",
+        "cursorParam": "page",
+        "firstPage": 1,
+        "maxPages": 50
+      },
+      "as": "usage"
+    }
+  ],
+  "mapping": {
+    "usage": {
+      "recordsPath": "$.data[*]",
+      "fields": {
+        "bucketStart": "$.timestamp",
+        "inputTokens": "$.input_tokens",
+        "outputTokens": "$.output_tokens",
+        "requests": "$.request_count",
+        "model": "$.model",
+        "apiKeyId": "$.api_key_id"
+      },
+      "timeUnit": "unix_seconds"
+    }
+  },
+  "supportsPerKey": true,
+  "setup": {
+    "note": "通用用量模板。修改 endpoints[0] 的 baseUrl/path/query，并在 mapping.usage 中用 JSONPath 把字段映射到标准字段（bucketStart/inputTokens/outputTokens/requests/model/apiKeyId）。timeUnit 支持 unix_seconds/unix_ms/iso8601。"
+  }
+}

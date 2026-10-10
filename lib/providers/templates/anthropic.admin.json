@@ -1,0 +1,88 @@
+{
+  "id": "anthropic.admin",
+  "name": "Anthropic Claude",
+  "version": 1,
+  "category": "usage",
+  "docs": "https://platform.claude.com/docs/en/manage-claude/usage-cost-api",
+  "description": "Anthropic organization-level token usage & cost. Requires an Admin API key (sk-ant-admin...).",
+  "match": {
+    "keyPrefix": "sk-ant-admin",
+    "baseUrlHint": "api.anthropic.com"
+  },
+  "auth": {
+    "type": "header",
+    "headerName": "x-api-key",
+    "valueTemplate": "{{key}}"
+  },
+  "endpoints": [
+    {
+      "id": "usage",
+      "method": "GET",
+      "baseUrl": "https://api.anthropic.com",
+      "path": "/v1/organizations/usage_report/messages",
+      "query": {
+        "starting_at": "{{window.startIso}}",
+        "ending_at": "{{window.endIso}}",
+        "bucket_width": "{{window.bucketWidth}}",
+        "group_by": ["model", "api_key_id", "workspace_id"]
+      },
+      "headers": {
+        "anthropic-version": "2023-06-01"
+      },
+      "pagination": {
+        "type": "time",
+        "cursorParam": "page",
+        "cursorPath": "$.next_page",
+        "hasMorePath": "$.has_more",
+        "maxPages": 50
+      },
+      "as": "usage"
+    },
+    {
+      "id": "cost",
+      "method": "GET",
+      "baseUrl": "https://api.anthropic.com",
+      "path": "/v1/organizations/cost_report",
+      "query": {
+        "starting_at": "{{window.startIso}}",
+        "ending_at": "{{window.endIso}}",
+        "bucket_width": "1d",
+        "group_by": ["workspace_id"]
+      },
+      "headers": {
+        "anthropic-version": "2023-06-01"
+      },
+      "pagination": {
+        "type": "time",
+        "cursorParam": "page",
+        "cursorPath": "$.next_page",
+        "hasMorePath": "$.has_more",
+        "maxPages": 50
+      },
+      "as": "cost"
+    }
+  ],
+  "mapping": {
+    "usage": {
+      "recordsPath": "$.data[*].results[*]",
+      "bucketStartFromParent": "$.data[*].starting_at",
+      "bucketEndFromParent": "$.data[*].ending_at",
+      "fields": {
+        "bucketStart": "$.starting_at",
+        "bucketEnd": "$.ending_at",
+        "inputTokens": "$.uncached_input_tokens",
+        "cachedInputTokens": "$.cache_read_input_tokens",
+        "cacheCreationTokens": "$.cache_creation_input_tokens",
+        "outputTokens": "$.output_tokens",
+        "model": "$.model",
+        "apiKeyId": "$.api_key_id",
+        "workspaceId": "$.workspace_id"
+      },
+      "timeUnit": "iso8601"
+    }
+  },
+  "supportsPerKey": true,
+  "setup": {
+    "note": "需要组织管理员创建的 Admin API Key（以 sk-ant-admin 开头）。输入 token 会拆分未缓存/缓存读取/缓存创建三类，便于分析 prompt caching 效果。"
+  }
+}

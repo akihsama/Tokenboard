@@ -1,0 +1,19 @@
+services:
+  tokenboard:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: tokenboard:latest
+    container_name: tokenboard
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Generate with:  pnpm gen-key   (or: openssl rand -base64 32)
+      # If unset, a master key is auto-created in /app/data/master.key
+      TOKENBOARD_MASTER_KEY: ${TOKENBOARD_MASTER_KEY:-}
+      SYNC_CRON: ${SYNC_CRON:-0 */6 * * *}
+      DATA_DIR: /app/data
+    volumes:
+      # Persist the SQLite database and the local master key.
+      - ./data:/app/data

@@ -1,0 +1,49 @@
+{
+  "id": "deepseek.balance",
+  "name": "DeepSeek",
+  "version": 1,
+  "category": "balance",
+  "docs": "https://api-docs.deepseek.com/api/get-user-balance",
+  "description": "DeepSeek account balance via the official /user/balance endpoint.",
+  "match": {
+    "keyPrefix": "sk-",
+    "baseUrlHint": "api.deepseek.com"
+  },
+  "auth": {
+    "type": "bearer",
+    "headerName": "Authorization",
+    "valueTemplate": "Bearer {{key}}"
+  },
+  "endpoints": [
+    {
+      "id": "balance",
+      "method": "GET",
+      "baseUrl": "https://api.deepseek.com",
+      "path": "/user/balance",
+      "query": {},
+      "headers": {},
+      "pagination": { "type": "none" },
+      "as": "balance"
+    }
+  ],
+  "mapping": {
+    "balance": {
+      "amount": "$.balance_infos[0].total_balance",
+      "currency": "$.balance_infos[0].currency",
+      "granted": "$.balance_infos[0].granted_balance",
+      "topUp": "$.balance_infos[0].topped_up_balance",
+      "isAvailable": "$.is_available",
+      "coerce": {
+        "amount": "number",
+        "granted": "number",
+        "topUp": "number",
+        "isAvailable": "boolean"
+      },
+      "defaultCurrency": "CNY"
+    }
+  },
+  "supportsPerKey": false,
+  "setup": {
+    "note": "提供账户余额（非用量）。余额会按时间记录为快照，可查看余额变化曲线。"
+  }
+}
